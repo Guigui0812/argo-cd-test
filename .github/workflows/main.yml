@@ -7,7 +7,8 @@ env:
 on:
   pull_request:
     branches:
-      - dev  # Exécuter le workflow uniquement pour les pull requests vers dev
+      - dev
+    types: [merged]
 
 jobs:
   build-and-update:
