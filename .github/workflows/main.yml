@@ -39,6 +39,10 @@ jobs:
           push: true
           tags: ${{ env.DOCKERHUB_USERNAME }}/myapp:${{ github.sha }}
 
+      - name: Create new branch
+        run: |
+          git checkout -b update-kube-${{ github.sha }}
+
       - name: Update Kubernetes deployment file
         if: github.ref == 'refs/heads/dev'
         run: |
