@@ -39,11 +39,23 @@ jobs:
           tags: ${{ env.DOCKERHUB_USERNAME }}/myapp:${{ github.sha }}
 
       - name: Update Kubernetes deployment file
-        if: github.ref == 'refs/heads/dev'  # S'assurer que la mise à jour ne se fait que sur les PR à dev
+        if: github.ref == 'refs/heads/dev'
         run: |
           sed -i "s|starman0812/myapp:.*|starman0812/myapp:${{ github.sha }}|g" k8s/deployment.yml
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add k8s/deployment.yml
-          git commit -m "Update image to ${{ github.sha }}" || exit 0 
-          git push origin HEAD:dev  # Spécifie explicitement la branche
+          git commit -m "Update Kubernetes deployment to ${{ github.sha }}"
+
+      - name: Push changes
+        run: |
+          git push origin update-kube-${{ github.sha }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          branch: update-kube-${{ github.sha }}
+          title: "Update Kubernetes configuration"
+          body: "Update the Kubernetes deployment to use the new Docker image tag."
+          base: "dev"
+          labels: "automerge"
