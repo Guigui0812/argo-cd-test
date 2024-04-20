@@ -35,36 +35,52 @@ jobs:
           push: true
           tags: ${{ env.DOCKERHUB_USERNAME }}/myapp:${{ github.sha }}
 
-  update-k8s-files:
+  update-k8s-dev:
     needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Update Kubernetes deployment file
-        run: |
-          sed -i "s|${{ env.DOCKERHUB_USERNAME }}/myapp:.*|${{ env.DOCKERHUB_USERNAME }}/myapp:${{ github.sha }}|g" k8s/deployment.yaml
-      - name: Commit and push if changed
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add k8s/deployment.yaml
-          git commit -m "Update image to ${{ github.sha }}" || exit 0  # exit 0 to avoid failure if no changes
-          git push
-
-  deploy-dev:
-    needs: update-k8s-files
     if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Notify Argo CD to sync (optional)
-        run: echo "Notify Argo CD if needed"
+      - name: Update Kubernetes deployment file for Dev
+        run: |
+          sed -i "s|${{ env.DOCKERHUB_USERNAME }}/myapp:.*|${{ env.DOCKERHUB_USERNAME }}/myapp:${{ github.sha }}|g" k8s/dev/deployment.yaml
+      - name: Commit and push if changed
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add k8s/dev/deployment.yaml
+          git commit -m "Update image to ${{ github.sha }}" || exit 0  # exit 0 to avoid failure if no changes
+          git push
+
+  deploy-dev:
+    needs: update-k8s-dev
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Notify Argo CD to sync Dev
+        run: echo "Notify Argo CD to sync Dev environment"
+
+  update-k8s-prod:
+    needs: build
+    if: ${{ github.event.inputs.deployProd == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Update Kubernetes deployment file for Prod
+        run: |
+          sed -i "s|${{ env.DOCKERHUB_USERNAME }}/myapp:.*|${{ env.DOCKERHUB_USERNAME }}/myapp:${{ github.sha }}|g" k8s/prod/deployment.yaml
+      - name: Commit and push if changed
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add k8s/prod/deployment.yaml
+          git commit -m "Update image to ${{ github.sha }}" || exit 0
+          git push
 
   deploy-prod:
-    needs: update-k8s-files
+    needs: update-k8s-prod
     runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.deployProd == 'true' }}
     steps:
       - uses: actions/checkout@v2
       - name: Manual Trigger for Prod Deployment
-        run: echo "Manual deployment trigger to Argo CD (if needed)"
+        run: echo "Manual deployment trigger to Argo CD for Prod"
