@@ -3,7 +3,6 @@ const axios = require('axios');
 require('dotenv').config();
 
 
-
 // Weather App to test argo cd 2 before testing it during work
 
 const app = express();
