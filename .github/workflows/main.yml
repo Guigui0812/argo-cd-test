@@ -8,12 +8,6 @@ on:
   push:
     branches:
       - dev
-  workflow_dispatch:
-    inputs:
-      deployProd:
-        description: 'Deploy to Prod? [true/false]'
-        required: true
-        default: 'false'
 
 jobs:
   build-and-update:
@@ -45,17 +39,3 @@ jobs:
           git add k8s/deployment.yml
           git commit -m "Update image to ${{ github.sha }}" || exit 0  # exit 0 to avoid failure if no changes
           git push
-
-  deploy:
-    needs: build-and-update
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/dev' || (github.ref == 'refs/heads/main' && ${{ github.event.inputs.deployProd }} == 'true')
-    steps:
-      - uses: actions/checkout@v2
-      - name: Notify Argo CD to sync
-        run: |
-          if [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
-            echo "Notify Argo CD to sync Dev environment"
-          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "Notify Argo CD to sync Prod environment"
-          fi
