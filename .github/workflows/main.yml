@@ -31,7 +31,7 @@ jobs:
 
       - name: Update Kubernetes deployment file
         run: |
-          sed -i "s|starman0812/myapp:[a-f0-9]*|starman0812/myapp:${{ github.sha }}|g" k8s/deployment.yml
+          sed -i "s|starman0812/myapp:.*|starman0812/myapp:${{ github.sha }}|g" k8s/deployment.yml
       - name: Commit and push if changed
         run: |
           git config --local user.email "action@github.com"
