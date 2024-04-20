@@ -2,7 +2,7 @@ const express = require('express');
 const axios = require('axios');
 require('dotenv').config();
 
-// Basic Weather App to test argo cd 2 before testing it during work
+// Weather App to test argo cd 2 before testing it during work
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,7 +12,7 @@ app.use(express.json());
 
 // Route principale pour vérifier si le serveur fonctionne
 app.get('/', async (req, res) => {
-    res.json({ message: 'Hello!' });
+    res.json({ message: 'Hello World Weathers !' });
 });
 
 // Route pour obtenir la température d'une ville spécifique
