@@ -10,6 +10,12 @@ const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY;
 
 app.use(express.json());
 
+// Route principale pour vérifier si le serveur fonctionne
+app.get('/', async (req, res) => {
+    res.json({ message: 'Hello!' });
+});
+
+// Route pour obtenir la température d'une ville spécifique
 app.post('/temperature', async (req, res) => {
     const { city, country } = req.body;
 
@@ -29,6 +35,7 @@ app.post('/temperature', async (req, res) => {
     }
 });
 
+// Démarrage du serveur sur le port spécifié
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
