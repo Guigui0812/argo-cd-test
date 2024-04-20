@@ -2,7 +2,7 @@ const express = require('express');
 const axios = require('axios');
 require('dotenv').config();
 
-// Basic Weather App
+// Basic Weather App to test argo cd
 
 const app = express();
 const PORT = process.env.PORT || 3000;
