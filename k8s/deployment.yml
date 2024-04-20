@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: weather-app-container
-        image: starman0812/myapp:06655a27675521649719a31add13f42a285c8ddc
+        image: starman0812/myapp:5eaebd2547a664ee62f1c7b27e1d4a961d35e17c
         ports:
         - containerPort: 3000
 
