@@ -12,7 +12,7 @@ app.use(express.json());
 
 // Route principale pour vérifier si le serveur fonctionne
 app.get('/', async (req, res) => {
-    res.json({ message: 'Hello World Weathers (en cours de dev) !' });
+    res.json({ message: 'Hello World Weathers (en cours de dev 3) !' });
 });
 
 // Route pour obtenir la température d'une ville spécifique
