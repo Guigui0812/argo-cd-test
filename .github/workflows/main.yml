@@ -6,8 +6,8 @@ env:
 
 on:
   push:
-    - dev
-
+    branches:
+      - dev
 jobs:
 
   build-and-update:
