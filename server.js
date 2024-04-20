@@ -2,6 +2,8 @@ const express = require('express');
 const axios = require('axios');
 require('dotenv').config();
 
+// Basic Weather App
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY;
