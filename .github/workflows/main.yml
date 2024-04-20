@@ -16,7 +16,7 @@ on:
         default: 'false'
 
 jobs:
-  build:
+  build-and-update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -35,21 +35,27 @@ jobs:
           push: true
           tags: ${{ env.DOCKERHUB_USERNAME }}/myapp:${{ github.sha }}
 
-  deploy-dev:
-    needs: build
+      - name: Update Kubernetes deployment file
+        run: |
+          sed -i "s|starman0812/myapp:[a-f0-9]*|starman0812/myapp:${{ github.sha }}|g" k8s/deployment.yml
+      - name: Commit and push if changed
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add k8s/deployment.yml
+          git commit -m "Update image to ${{ github.sha }}" || exit 0  # exit 0 to avoid failure if no changes
+          git push
+
+  deploy:
+    needs: build-and-update
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/dev'
+    if: github.ref == 'refs/heads/dev' || (github.ref == 'refs/heads/main' && ${{ github.event.inputs.deployProd }} == 'true')
     steps:
       - uses: actions/checkout@v2
-      - name: Deploy to Dev
+      - name: Notify Argo CD to sync
         run: |
-          echo "Deploying to Dev namespace with Argo CD using Docker image"
-  deploy-prod:
-    needs: build
-    runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.deployProd == 'true' }}
-    steps:
-      - uses: actions/checkout@v2
-      - name: Manual Trigger for Prod Deployment
-        run: |
-          echo "Deploying to Prod namespace with Argo CD using Docker image"
+          if [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
+            echo "Notify Argo CD to sync Dev environment"
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "Notify Argo CD to sync Prod environment"
+          fi
