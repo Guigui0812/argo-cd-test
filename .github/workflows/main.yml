@@ -5,8 +5,8 @@ env:
   DOCKERHUB_KEY: ${{ secrets.DOCKER_KEY }}
 
 on:
-  pull_request:
-    types: [closed]
+  push:
+    - dev
 
 jobs:
 
