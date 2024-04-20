@@ -5,6 +5,9 @@ env:
   DOCKERHUB_KEY: ${{ secrets.DOCKER_KEY }}
 
 on:
+  push:
+    branches:
+      - dev
   pull_request:
     branches:
       - dev
