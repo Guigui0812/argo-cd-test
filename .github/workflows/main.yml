@@ -8,7 +8,6 @@ on:
   push:
     branches:
       - dev
-      - main
   workflow_dispatch:
     inputs:
       deployProd:
@@ -43,7 +42,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git checkout dev
           git add k8s/deployment.yml
           git commit -m "Update image to ${{ github.sha }}" || exit 0  # exit 0 to avoid failure if no changes
           git push
