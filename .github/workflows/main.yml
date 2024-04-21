@@ -43,3 +43,4 @@ jobs:
           git config --local user.name "GitHub Action"
           git add k8s/deployment.yml
           git commit -m "Update Kubernetes deployment to ${{ github.sha }}"
+          git push
