@@ -14,7 +14,7 @@ app.use(express.json());
 // Route principale pour vérifier si le serveur fonctionne
 app.get('/', async (req, res) => {
     // Hello world message for testing
-    res.json({ message: 'Hello World openweathermap test (en cours de dev) !' });
+    res.json({ message: 'Hello World openweathermap test (en cours de dev nouvelle version) !' });
 });
 
 // Route pour obtenir la température d'une ville spécifique
